@@ -80,3 +80,5 @@ Following statements below show potential shortcomings:
 - Path prediction based on previous paths.
 
 - Use of other noise reduction techniques, esp. for merging differences between night and day path finding.
+
+- Limit slope such that there exists a range, where small slopes get caught as errors and are ignored.
