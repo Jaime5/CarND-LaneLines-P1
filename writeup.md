@@ -19,7 +19,6 @@ The goals / steps of this project are the following:
 [output_img_5]: ./test_images_output/whiteCarLaneSwitch.jpg "SYCJ4"
 
 [output_gif_0]: ./test_videos_output/gif/solidWhiteRight.gif "SWRG"
-
 [output_gif_1]: ./test_videos_output/gif/solidYellowLeft.gif "SYLG"
 
 ---
@@ -81,3 +80,5 @@ Following statements below show potential shortcomings:
 - Path prediction based on previous paths.
 
 - Use of other noise reduction techniques, esp. for merging differences between night and day path finding.
+
+- Limit slope such that there exists a range, where small slopes get caught as errors and are ignored.
