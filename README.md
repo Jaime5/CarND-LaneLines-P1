@@ -1,56 +1,82 @@
-# **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+# **Finding Lane Lines on the Road**
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
-
-Overview
+## Writeup
 ---
 
-When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
+**Finding Lane Lines on the Road**
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
+The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road using various different CV algorithms.
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
+[//]: # (Image References)
+[image1]: ./examples/grayscale.jpg "Grayscale"
 
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
+[output_img_0]: ./test_images_output/solidWhiteCurve.jpg "Solid White Curve Output"
+[output_img_1]: ./test_images_output/solidwhiteRight.jpg "Solid White Right Output"
+[output_img_2]: ./test_images_output/solidYellowCurve.jpg "SYCJ"
+[output_img_3]: ./test_images_output/solidYellowCurve2.jpg "SYCJ2"
+[output_img_4]: ./test_images_output/solidYellowLeft.jpg "SYCJ3"
+[output_img_5]: ./test_images_output/whiteCarLaneSwitch.jpg "SYCJ4"
 
+[output_gif_0]: ./test_videos_output/gif/solidWhiteRight.gif "SWRG"
+[output_gif_1]: ./test_videos_output/gif/solidYellowLeft.gif "SYLG"
 
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
-
-1. Describe the pipeline
-
-2. Identify any shortcomings
-
-3. Suggest possible improvements
-
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
-
-
-The Project
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+### Reflection
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+### 1. Pipeline Process Description
 
-**Step 2:** Open the code in a Jupyter Notebook
+The pipeline generated for this topic required the following steps.
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out <A HREF="https://www.packtpub.com/books/content/basics-jupyter-notebook-and-python" target="_blank">Cyrille Rossant's Basics of Jupyter Notebook and Python</A> to get started.
+- First up was preprocessing the image using  grayscale for Canny Edge Detection (CED). 
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+- Next, the Gaussian Blur algorithm was applied to reduce background noise, and hence lower the chance of picking up incorrect lines from CED. 
 
-`> jupyter notebook`
+- CED was then used to detect the edges inside of the image. 
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+- After CED, region masking was applied to remove unneeded edges defined by the algorithm. The masking figure was defined by using a triangular shape, similar to that of the trajectory shape.
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+- Following the masking was the application of houghlines, an algorithm that allowed for the generation of lines based on line length, spacing and more. Those requirements were shuffled around until a decently shaped houghline formed as a result.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+- Inside the houghlines function, the function drawlines is used, which applies the set of lines generated from the houghlines onto the picture. IMPORTANT! However, the draw lines function was edited such that an average of all the lines collected was drawn. This was done by separating both lines based on slope, and then averaging the lines on each side based on the starting and ending point.
 
+- Finally, given the new lines drawn, an additional weight was added to both edges to draw a more filled line.
+
+### Results
+
+#### Given samples of photos with paths drawn onto them.
+
+![alt text][output_img_0]
+![alt text][output_img_1]
+![alt text][output_img_2]
+![alt text][output_img_3]
+![alt text][output_img_4]
+![alt text][output_img_5]
+
+#### Given samples of videos with paths drawn onto them.
+
+![alt text][output_gif_0]
+![alt text][output_gif_1]
+
+
+### 2. Potential Shortcomings of Pipeline
+
+Unfortunately, in any real-world condition the ideal condition is seldom applicable. 
+
+Following statements below show potential shortcomings:
+
+- Tight corners will fail the region masking based on triangulation. 
+
+- During night-time the level of noise reduction provided by the Gaussian Blur, and other thresholds in general will need to be reduced.
+
+- Suppose there are cars in front of us such that the lanes are not completely visible.
+
+
+### 3. Possible Pipeline Improvements
+
+- Increase region visible or completely ignore the use of region masking since paths can differ in real world scenarios. Would require use of more complex noise reduction techniques.
+
+- Path prediction based on previous paths.
+
+- Use of other noise reduction techniques, esp. for merging differences between night and day path finding.
